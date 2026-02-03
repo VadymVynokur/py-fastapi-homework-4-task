@@ -26,7 +26,10 @@ async def create_profile(
     # Перевірка доступу
     is_admin = getattr(current_user, "group_id", None) == 3
     if current_user.id != user_id and not is_admin:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to edit this profile.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to edit this profile."
+        )
 
     # Перевірка на існуючий профіль
     stmt = select(UserProfileModel).where(UserProfileModel.user_id == user_id)
@@ -40,7 +43,10 @@ async def create_profile(
     try:
         await s3_client.upload_file(file_name=avatar_key, file_data=avatar_bytes)
     except S3FileUploadError:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to upload avatar. Please try again later.")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to upload avatar. Please try again later."
+        )
 
     # Створення профілю
     new_profile = UserProfileModel(
